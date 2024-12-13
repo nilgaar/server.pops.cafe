@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard
+  namespace: wireguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wireguard
+  template:
+    metadata:
+      labels:
+        app: wireguard
+    spec:
+      containers:
+      - name: wireguard
+        image: linuxserver/wireguard:latest
+        env:
+        - name: PUID
+          value: "1000" # Adjust as needed
+        - name: PGID
+          value: "1000" # Adjust as needed
+        - name: TZ
+          value: "UTC"   # Adjust as needed
+        - name: SERVERURL
+          value: "vpn.pops.cafe" # Replace with your domain or IP
+        - name: SERVERPORT
+          value: "51820"
+        - name: PEERS
+          value: "1" # Number of clients
+        - name: PEERDNS
+          value: "1.1.1.1" # DNS for clients
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_MODULE
+      volumes:
+        - name: config
+          emptyDir: {}
