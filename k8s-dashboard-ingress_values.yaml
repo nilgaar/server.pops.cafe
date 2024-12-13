@@ -1,3 +1,0 @@
-certResolver:
-  enabled: true
-  name: myresolver
